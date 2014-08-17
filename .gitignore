@@ -8,6 +8,25 @@
 *_?ats.c
 *.exe
 
+projects/MEDIUM/SHOOTOUT/ATS2/fasta-redux/fasta-redux
+projects/MEDIUM/SHOOTOUT/ATS2/fasta-redux/fasta-redux_gcc3
+projects/MEDIUM/SHOOTOUT/ATS2/k-nucleotide/k-nucleotide
+projects/MEDIUM/SHOOTOUT/ATS2/k-nucleotide/k-nucleotide_gpp3
+projects/MEDIUM/SHOOTOUT/ATS2/k-nucleotide/k-nucleotide_gpp3.o
+projects/MEDIUM/SHOOTOUT/ATS2/k-nucleotide/k-nucleotide_mt
+projects/MEDIUM/SHOOTOUT/ATS2/mandelbrot/mandelbrot
+projects/MEDIUM/SHOOTOUT/ATS2/mandelbrot/mandelbrot_gcc4
+projects/MEDIUM/SHOOTOUT/ATS2/mandelbrot/mandelbrot_v2df
+projects/MEDIUM/SHOOTOUT/ATS2/mandelbrot/mandelbrot_v2df_smp
+projects/MEDIUM/SHOOTOUT/ATS2/pidigits/pidigits
+projects/MEDIUM/SHOOTOUT/ATS2/pidigits/pidigits_gcc
+projects/MEDIUM/SHOOTOUT/ATS2/reverse-complement/revcomp
+projects/MEDIUM/SHOOTOUT/ATS2/reverse-complement/revcomp_gcc2
+projects/MEDIUM/SHOOTOUT/ATS2/reverse-complement/revcomp_mt
+projects/MEDIUM/SHOOTOUT/ATS2/spectral-norm/spectral-norm
+projects/MEDIUM/SHOOTOUT/ATS2/spectral-norm/spectral-norm_gcc5
+projects/MEDIUM/SHOOTOUT/ATS2/spectral-norm/spectral-norm_smp
+
 ######
 
 #
