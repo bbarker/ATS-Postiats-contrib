@@ -60,3 +60,6 @@ contrib/libatscc/libatscc2php/output/DATS/*_dats.php
 ######
 
 ###### end of [.gitignore] ######
+/contrib/libats-/bbarker/Java/swtcalc/nbproject/private/
+/contrib/libats-/bbarker/Java/swtcalc/dist/
+/contrib/libats-/bbarker/Java/swtcalc/build/
