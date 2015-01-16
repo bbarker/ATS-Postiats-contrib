@@ -54,16 +54,19 @@ chneg_send_val{ss:type}(ch: !chneg(send(a) :: ss) >> chneg(ss)): a
 //
 (* ****** ****** *)
 
+(*
 extern
 fun chpos_recv_close (ch: chpos(nil)): void
 extern
-fun chneg_send_close (ch: chneg(nil)): void
+fun chneg_recv_close (ch: chneg(nil)): void
+*)
 
 (* ****** ****** *)
 //
 extern
 fun
-chpos_chneg_connect{ss:type} (ch1: chpos(ss), ch2: chneg(ss)): void
+chpos_chneg_connect
+  {ss:type}(ch1: chpos(ss), ch2: chneg(ss)): void
 //
 (* ****** ****** *)
 //
@@ -91,6 +94,21 @@ extern
 fun
 chpos_sslist
   {a:t0p}(chpos(sslist(a))): chpos_sslist(a)
+*)
+extern
+fun
+chpos_sslist_nil{a:t0p}(chpos(sslist(a))): void
+and
+chpos_sslist_cons
+  {a:t0p}(chpos(sslist(a))): chpos(send(a) :: sslist(a))
+//
+(* ****** ****** *)
+//
+extern
+fun
+chneg_sslist
+  {a:t0p}(chneg(sslist(a))): chneg_sslist(a)
+(*
 extern
 fun
 chneg_sslist_nil{a:t0p}(chneg(sslist(a))): void
@@ -100,26 +118,13 @@ chneg_sslist_cons
 *)
 //
 (* ****** ****** *)
-//
-extern
-fun
-chneg_sslist
-  {a:t0p}(chneg(sslist(a))): chneg_sslist(a)
-extern
-fun
-chpos_sslist_nil{a:t0p}(chpos(sslist(a))): void
-and
-chpos_sslist_cons
-  {a:t0p}(chpos(sslist(a))): chpos(send(a) :: sslist(a))
-//
-(* ****** ****** *)
 
 staload
 UN = "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
 //
-abst@ype bit = natLt(2)
+abst@ype bit = int
 //
 macdef B0 = $UN.cast{bit}(0)
 macdef B1 = $UN.cast{bit}(1)
@@ -139,7 +144,7 @@ fun int2bits{n:nat} (int(n)): chneg(sslist(bit))
 (* ****** ****** *)
 
 implement
-int2bits (n) = let
+int2bits(n) = let
 //
 fun
 fserv{n:nat}
@@ -151,8 +156,10 @@ if
 n > 0
 then let
   val n2 = half(n)
-  val bit = (if n = 2*n2 then 0 else 1): natLt(2)
-  val bit = $UN.cast{bit}(bit)
+  val bit =
+  (
+    if n = 2*n2 then B0 else B1
+  ) : bit // end of [val]
   val ch = chpos_sslist_cons (ch)
   val ((*void*)) = chpos_send (ch, bit)
 in
@@ -163,7 +170,7 @@ else chpos_sslist_nil (ch)
 ) (* end of [fserv] *)
 //
 in
-  chneg_create{sslist(bit)}(llam (ch) => fserv (n, ch))
+  chneg_create{sslist(bit)}(llam(ch) => fserv (n, ch))
 end // end of [int2bits]
 
 (* ****** ****** *)
@@ -175,8 +182,12 @@ fun add_bits_bits (chneg(sslist(bit)), chneg(sslist(bit))): chneg(sslist(bit))
 //
 (* ****** ****** *)
 
+typedef bit_ = natLt(2)
+
+(* ****** ****** *)
+
 implement
-succ_bits (ch1) = let
+succ_bits(ch1) = let
 //
 fun
 fserv
@@ -192,24 +203,24 @@ in
 case+ opt of
 | ~chneg_sslist_nil () => let
     val ch = chpos_sslist_cons (ch)
-    val ((*void*)) = chpos_send (ch, B1)
-    val ((*void*)) = chpos_sslist_nil (ch)
+    val () = chpos_send (ch, B1)
+    val () = chpos_sslist_nil (ch)
   in
     // nothing
   end // end of [chneg_sslist_nil]
 | ~chneg_sslist_cons (ch1) => let
     val ch = chpos_sslist_cons (ch)
     val bit = chneg_send_val (ch1)
-    val bit = $UN.cast{natLt(0)}(bit)
+    val bit_ = $UN.cast{bit_}(bit)
   in
-    if bit = 0
+    if bit_ = 0
       then let
-        val ((*void*)) = chpos_send (ch, B1)
+        val () = chpos_send (ch, B1)
       in
         chpos_chneg_connect (ch, ch1)
       end // end of [then]
       else let
-        val ((*void*)) = chpos_send (ch, B0)
+        val () = chpos_send (ch, B0)
       in
         fserv (ch, ch1)
       end // end of [else]
@@ -218,7 +229,7 @@ case+ opt of
 end // end of [fserv]
 //
 in
-  chneg_create{sslist(bit)}(llam (ch) => fserv (ch, ch1))
+  chneg_create{sslist(bit)}(llam(ch) => fserv (ch, ch1))
 end // end of [succ_bits]
   
 (* ****** ****** *)
@@ -243,20 +254,20 @@ case+ opt1 of
 | ~chneg_sslist_nil () =>
     chpos_chneg_connect (ch, ch2)
 | ~chneg_sslist_cons (ch1) => let
+    val ch =
+      chpos_sslist_cons (ch)
+    // end of [val]
     val opt2 = chneg_sslist (ch2)
   in
     case+ opt2 of
-    | ~chneg_sslist_nil () => let
-        val ch = chpos_sslist_cons (ch)
-      in
-        chpos_chneg_connect (ch, ch1)
-      end // end of [chneg_sslist_nil]
+    | ~chneg_sslist_nil () =>
+        chpos_chneg_connect(ch, ch1)
+      // end of [chneg_sslist_nil]
     | ~chneg_sslist_cons (ch2) => let
-        val b1 = chneg_send_val (ch1)
-        and b2 = chneg_send_val (ch2)
-        val b1_ = $UN.cast{natLt(2)}(b1)
-        and b2_ = $UN.cast{natLt(2)}(b2)
-        val ch = chpos_sslist_cons (ch)
+        val b1 = chneg_send_val(ch1)
+        and b2 = chneg_send_val(ch2)
+        val b1_ = $UN.cast{bit_}(b1)
+        and b2_ = $UN.cast{bit_}(b2)
       in
         case+ b1_ of
         | 0 => (chpos_send (ch, b2); fserv (ch, ch1, ch2))
@@ -271,7 +282,7 @@ case+ opt1 of
 end // end of [fserv]
 //
 in
-  chneg_create{sslist(bit)}(llam (ch) => fserv (ch, ch1, ch2))
+  chneg_create{sslist(bit)}(llam(ch) => fserv (ch, ch1, ch2))
 end // end of [add_bits_bits]
 
 (* ****** ****** *)

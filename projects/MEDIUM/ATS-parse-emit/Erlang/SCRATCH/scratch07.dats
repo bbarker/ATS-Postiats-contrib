@@ -54,10 +54,12 @@ chneg_send_val{ss:type}(ch: !chneg(send(a) :: ss) >> chneg(ss)): a
 //
 (* ****** ****** *)
 
+(*
 extern
 fun chpos_recv_close (ch: chpos(nil)): void
 extern
-fun chneg_send_close (ch: chneg(nil)): void
+fun chneg_recv_close (ch: chneg(nil)): void
+*)
 
 (* ****** ****** *)
 
@@ -68,7 +70,9 @@ abstype service(type)
 extern
 fun
 service_create{ss:type}
-  (f: chpos(ss) -<lincloptr1> void): service(ss)
+(
+  f: chpos(ss) -<cloref1> void
+) : service(ss) // end-of-fun
 //
 extern
 fun service_request{ss:type}(service(ss)): chneg(ss)
@@ -130,7 +134,7 @@ case+ opt of
 end // end of [fserv]
 //
 in
-  service_create{sslist(int)}(llam (ch) => fserv(0, ch))
+  service_create{sslist(int)}(lam (ch) => fserv(0, ch))
 end // end of [myservice_ints]
 
 (* ****** ****** *)
@@ -206,7 +210,7 @@ case opt of
 end // end of [fserv2]
 //
 in
-  service_create{recv(chneg(sslist(int))) :: sslist(int)}(llam (ch) => fserv1 (chpos_recv_val(ch), ch))
+  service_create{recv(chneg(sslist(int))) :: sslist(int)}(lam (ch) => fserv1 (chpos_recv_val(ch), ch))
 end // end of [fserv]
 
 (* ****** ****** *)
@@ -266,7 +270,7 @@ case+ opt of
 end // end of [fserv2]
 //
 in
-  service_create{sslist(int)}(llam (ch) => fserv (ch))
+  service_create{sslist(int)}(lam (ch) => fserv (ch))
 end // end of [myservice_primes]
 
 (* ****** ****** *)
