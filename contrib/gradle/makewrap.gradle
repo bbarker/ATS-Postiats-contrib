@@ -30,7 +30,9 @@ def myNextTask(Integer i) {
 }
 
 taskLen.times { i ->
-    task "${project.gradle.startParameter.taskNames[i]}" (type: MyExternTask, dependsOn: myNextTask(i)) {
+    task "${project.gradle.startParameter.taskNames[i]}" (
+            type: MyExternTask,
+            dependsOn: myNextTask(i)) {
         mycmdln = "make ${project.gradle.startParameter.taskNames[i]}"
     }
 }
